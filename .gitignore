@@ -1,0 +1,14 @@
+.venv/
+.idea/
+.vscode/
+# idea/
+# venv/
+# vscode/
+
+# .idea/*
+safire/creds/*.json
+safire/data/*.csv
+safire/data/*.xlsx
+safire/svcaccts/*.json
+safire/creds/*.pickle
+safire/creds/archive/

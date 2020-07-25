@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "safire"
+version = "0.1.0"
+description = ""
+authors = ["88lex"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+requests = "^2.24.0"
+fire = "^0.3.1"
+google-api-python-client = "^1.10.0"
+pandas = "^1.0.5"
+google-auth-oauthlib = "^0.4.1"
+oauth2client = "^4.1.3"
+openpyxl = "^3.0.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+yapf = "^0.30.0"
+pylint = "^2.5.3"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
