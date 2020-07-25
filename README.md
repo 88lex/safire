@@ -269,3 +269,8 @@ COMMANDS
 
      jsons
        Usage: 'safire rename jsons email'  [choice email, email_seq, uniq, seq]
+
+
+
+## CREDITS:
+   Many ideas, some bits of code and inspiration from spazzlo, fionera and generally from l3uddz, ncw and others - all of whose projects are excellent and some of them do some/all of what fire does. If I forgot to mention you here let me know.
