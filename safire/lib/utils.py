@@ -144,6 +144,7 @@ class Auth:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(credentials[0], scopes)
-                creds = flow.run_local_server()
+                # creds = flow.run_local_server()
+                creds = flow.run_console()
             with open(token, "wb") as tkn:
                 pickle.dump(creds, tkn)

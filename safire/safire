@@ -21,7 +21,7 @@ from lib.utils import *
 
 
 class Commands:
-    """safire creates projects, service accounts(SAs), json keys for SAs and to add SAs as group members.\n Type -h
+    """safire creates projects, service accounts(SAs), json keys for SAs and adds SAs as group members.\n Type -h
     or --help after any command for info.  Usage: './safire list projects' or 'safire add members mygroup@domain.com'
     Most commands accept a 'filter'to process subsets. If no filter all items are listed."""
 
