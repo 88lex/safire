@@ -1,5 +1,5 @@
-# SAFIRE
-## A flexible tool to create and delete service accounts to be used with shared drives.
+## __SAFIRE__
+## A flexible tool to create and delete Google / GSuite service accounts to be used with shared drives.
 
 - Simple usage syntax: e.g. `safire list projects`
 - Available main commands:
@@ -16,6 +16,45 @@
     - keys / jsons
     - groups
     - members
+
+Before running safire you will need one project (new or old is fine) with several apis enabled.
+- If no project exists go to https://console.cloud.google.com/projectcreate to create one in your main account
+- Then go to https://console.cloud.google.com/apis/library. Ensure you choose your main project (dropdown at the top of the page), then enable the following APIs:
+
+    [ __You only need to do this once.__ ]
+
+    - Admin
+    - Drive
+    - Identity and Access Management (IAM)
+    - Cloud Resource Manager
+    - Service Usage
+    - Service Management
+
+Once you have enabled the above APIs then go to this page 
+- https://console.cloud.google.com/apis/credentials
+- Click Create Credentials
+- Choose `OAuth client ID`
+- For Application type choose `Desktop app` and name it as you like ( 'safire' or anything)
+- Click Create
+- Finally choose `Download JSON`
+- You will use this JSON to create a token which allows you access to your account and gives you permission to create projects, service accounts, etc. Keep one copy of this JSON in a safe place, then put a copy named `creds.json` in the `safire/creds` folder [specified in your config.py file - you can change the location if you like]
+
+Once you have this initial project created, all the APIs above enabled and have created/downloaded the credentials creds.json you are ready to use safire.
+
+The command line is very flexible. You can quickly and easily create and delete service accounts(SAs), json keys (that let you access shared drives and copy/sync/move files), add the SA emails to groups and shared drives and use with tools like sasync, cloudplow/cloudbox, crop etc.  
+
+`Don't be afraid to play with the commands. You can fix almost anything by deleting and recreating components in a few minutes.  [The exception being projects, which you should not delete as they go into a 30-day holding bin before being fully deleted, and count against your project quota.]`
+
+A typical, simple flow of commands 
+
+- download a credentials json 
+- create auth token to enable safire to access your account: `./safire auth all` will create two tokens, one to access projects/drives/etc and one to access groups 
+- add projects: `./safire add projects 5` will add 5 projects using the prefix in your config.py file
+- enable apis: happens automatically when you add projects, but can be done manually
+- create sas: `./safire add sas ""` will add sas to all or your projects using # of SAs in config.py 
+- download json keys: `./safire add jsons ""` will create and download service account json keys to the folder in config.py
+- add members to group: `./safire add members "" mygroup@domain.com` will add all SA emails from all projects to a group called mygroup@domain.com
+- add group to shared (team) drive
 
 
 ## Detailed commands
