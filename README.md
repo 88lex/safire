@@ -41,7 +41,10 @@ Once you have enabled the above APIs then go to this page
 
 Once you have this initial project created, all the APIs above enabled and have created/downloaded the credentials creds.json you are ready to use safire.
 
-The command line is very flexible. You can quickly and easily create and delete service accounts(SAs), json keys (that let you access shared drives and copy/sync/move files), add the SA emails to groups and shared drives and use with tools like sasync, cloudplow/cloudbox, crop etc.  
+The command line is very flexible. You can quickly and easily 
+- create projects
+- create and delete service accounts(SAs) and json keys (that let you access shared drives and copy/sync/move files), 
+- add the SA emails to groups and shared drives to use with tools like sasync, cloudplow/cloudbox, crop etc.  
 
 `Don't be afraid to play with the commands. You can fix almost anything by deleting and recreating components in a few minutes.  [The exception being projects, which you should not delete as they go into a 30-day holding bin before being fully deleted, and count against your project quota.]`
 
