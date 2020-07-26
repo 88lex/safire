@@ -444,5 +444,10 @@ class Rename:
         print('\nCurrent filenames:', *sorted(os.listdir(dir)), sep='\n')
 
 
-if __name__ == "__main__":
+def main():
     fire.Fire(Commands)
+
+
+if __name__ == "__main__":
+    # fire.Fire(Commands)
+    main()
