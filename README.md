@@ -18,6 +18,7 @@ __BONUS__:  `safire list all` will create both csv and xlsx files listing name/u
     - keys / jsons
     - groups
     - members
+    - drives (yes, safire can create and delete shared drives)
 
 __Recommended to run safire__: 
 - Python 3.7 or higher
