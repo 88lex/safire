@@ -1,5 +1,5 @@
 ### __SAFIRE__
-##### A flexible tool to create and delete GSuite projects, service accounts and jsons which can be used with shared drives.
+#### A flexible tool to create and delete GSuite projects, service accounts and jsons which can be used with shared drives.
 
 __BONUS__:  `safire list all` will create both csv and xlsx files listing name/unique id/etc. for all projects, service accounts, shared drives, groups and group members for your account. Handy for use with other apps and scripts.
 
@@ -22,6 +22,7 @@ __BONUS__:  `safire list all` will create both csv and xlsx files listing name/u
 __Recommended to run safire__: 
 - Python 3.7 or higher
 - You can run safire without install from the directory holding `safire.py` (e.g. `cd /opt/safire/safire`; `./safire.py list projects`) 
+  - To do this you must first run `pip install -r requirements.txt`
 - To install and run from anywhere on your machine go to /safire dir (not /safire/safire) and run `sudo -H pip3 install --upgrade pip`
   - Use a recent version of pip that runs with pyproject.toml rather than setup.py (try pip install --upgrade pip)
 
