@@ -18,6 +18,8 @@ json_prefix = ""
 
 ########################################################################
 ### Config variables below are normally not changed by the user      ###
+# files_path = "/opt/safire/safire"
+files_path = "/opt/data"
 sa_path = "svcaccts"
 credentials = "creds/creds.json"
 token = "creds/token.pickle"
@@ -44,3 +46,11 @@ IAM = ["iam", "v1"]
 ADMIN = ["admin", "directory_v1"]
 SVCUSAGE = ["serviceusage", "v1"]
 svcs_to_enable = ["iam", "drive"]
+
+### Add path to creds, service accounts and csv/xlsx files
+sa_path = f"{files_path}/{sa_path}"
+credentials = f"{files_path}/{credentials}"
+token = f"{files_path}/{token}"
+data_path = f"{files_path}/{data_path}"
+group_credentials = f"{files_path}/{group_credentials}"
+group_token = f"{files_path}/{group_token}"

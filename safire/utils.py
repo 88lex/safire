@@ -1,25 +1,15 @@
 #!/usr/bin/env python3
 
-# import fire
-import os
+import os, sys
 import pickle
-# import uuid
 from glob import glob
 
 import pandas as pd
-# import googleapiclient.discovery
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 from config import *
-
-# from json import loads
-# from time import sleep
-
-# from googleapiclient.errors import HttpError
-# from googleapiclient import discovery
-# from oauth2client.client import OAuth2Credentials as creds
 
 
 class Help:
@@ -130,7 +120,7 @@ class Auth:
         self.get_token(credentials, self.scopes_group, group_token)
 
     def all(self, credentials=credentials, token=token):
-        """Create an auth token for adding/removing group members"""
+        """Create an auth token with APIs enabled for projects and groups"""
         self.get_token(credentials, self.scopes_all, token)
 
     def get_token(self, credentials, scopes, token):
@@ -144,7 +134,10 @@ class Auth:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(credentials[0], scopes)
-                # creds = flow.run_local_server()
-                creds = flow.run_console()
+                yes_no = input("Run local server with browser? If no, generate console link. y/n: ")
+                if yes_no.lower() in ["y", "yes"]:
+                    creds = flow.run_local_server()
+                else:
+                    creds = flow.run_console()
             with open(token, "wb") as tkn:
                 pickle.dump(creds, tkn)

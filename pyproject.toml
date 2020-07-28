@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "safire"
-version = "0.1.0"
+version = "0.1.1"
 description = "A flexible tool to create and delete Google / GSuite service accounts to be used with shared drives."
 authors = ["88lex"]
 keywords = ["gsuite", "sas", "service accounts"]
@@ -15,15 +15,17 @@ pandas = "^1.0.5"
 google-auth-oauthlib = "^0.4.1"
 oauth2client = "^4.1.3"
 openpyxl = "^3.0.4"
+uuid = "^1.30"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 yapf = "^0.30.0"
 pylint = "^2.5.3"
 
+[tool.poetry.scripts]
+safire = "safire.safire:main"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
-[tool.poetry.scripts]
-safire = "safire.safire:main"

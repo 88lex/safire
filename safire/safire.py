@@ -1,23 +1,16 @@
 #!/usr/bin/env python3
 
-# import json
-import os
-# import pickle
+import os, sys
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
 import uuid
+import fire
 from base64 import b64decode
 from glob import glob
 from json import loads
 from time import sleep
-
-# from lib.rename import rename
-import fire
-# import googleapiclient.discovery
-# import pandas as pd
-
 from config import *
-from lib.utils import *
-
-# from oauth2client.client import OAuth2Credentials as creds
+from utils import *
 
 
 class Commands:
@@ -207,10 +200,10 @@ class Add(Help):
         iam = self._svc(*IAM, token)
         projId_list = self._list.projects(filter, file_tag, token, prt)
         all_sas = []
-        if check_all:
-            for project in projId_list:
-                resp, _ = self._list.sas(project, file_tag, token, False)
-                all_sas += resp
+        # if check_all:
+        #     for project in projId_list:
+        #         resp, _ = self._list.sas(project, file_tag, token, False)
+        #         all_sas += resp
         for project in projId_list:
             batch = BatchJob(iam)
             sa_emails, _ = self._list.sas(project, file_tag, token, False)
@@ -263,19 +256,6 @@ class Add(Help):
                     with open("%s/%s.json" % (sa_path, json_name), "w+") as f:
                         f.write(k)
                     next_json_num += 1
-
-            # if resp is not None:
-            #     for i in resp:
-            #         key_info.append((i["name"][i["name"].rfind("/"):], b64decode(i["privateKeyData"]).decode("utf-8")))
-            #     for j in range(len(key_info)):
-            #         k = key_info[j][1]
-            #         print(k)
-            #         json_name = self._pre_pad(json_prefix, jpad, next_json_num)
-            #         with open("%s/%s.json" % (sa_path, json_name), "w+") as f:
-            #             f.write(k)
-            #             # f.write(k[1])
-            #         next_json_num += 1
-        # return next_json_num
 
     keys = jsons
 
@@ -406,7 +386,6 @@ class Remove(Help):
     def user(self, td_id, user, role='organizer', token=token):
         """Remove user (typically group name) from a shared/team drive. Usage: 'safire remove someTDid mygroup@domain.com'"""
         drvsvc = self._svc(*DRIVE, token)
-        # body = {'type': 'user', 'emailAddress': user}
         return drvsvc.permissions().delete(permissionId=user, fileId=td_id, supportsAllDrives=True,
                                            fields='id').execute().get('id')
 
@@ -418,7 +397,7 @@ class Rename:
 
     def jsons(self, rename_type, dir=f"{sa_path}/"):
         """Usage: 'safire rename jsons email'  [choice email, email_seq, uniq, seq]"""
-        import json, os, sys
+        import json, os
         filelist = os.listdir(dir)
         print('\nOriginal filenames:', *sorted(filelist), sep='\n')
         new_name = []
@@ -444,10 +423,16 @@ class Rename:
         print('\nCurrent filenames:', *sorted(os.listdir(dir)), sep='\n')
 
 
+def __init__(self):
+    from pathlib import Path
+    global cwd
+    cwd = Path(__file__).parents[0]
+    exec(open(f"{cwd}/config.py").read())
+
+
 def main():
     fire.Fire(Commands)
 
 
 if __name__ == "__main__":
-    # fire.Fire(Commands)
     main()

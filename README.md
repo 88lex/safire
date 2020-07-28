@@ -3,7 +3,7 @@
 
 ### Create projects, SAs, jsons/keys for SAs, group members and shared drives.
 
-### A side feature: `safire list all` will create both csv and xlsx files listing name/unique id/etc. for all projects, service accounts, shared drives, groups and group members for your account. Handy for use with other apps and scripts.
+### BONUSs: `safire list all` will create both csv and xlsx files listing name/unique id/etc. for all projects, service accounts, shared drives, groups and group members for your account. Handy for use with other apps and scripts.
 
 - Simple usage syntax: e.g. `safire list projects`
 - Available main commands:
