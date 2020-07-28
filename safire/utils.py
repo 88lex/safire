@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
-import os, sys
+import os
 import pickle
 from glob import glob
+from pathlib import Path
 
 import pandas as pd
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-from config import *
-
+import config as cf
 
 class Help:
     """These small functions support repeated activities in other classes/functions"""
@@ -32,12 +32,12 @@ class Help:
         df = pd.DataFrame(dset)
         fname = f"{ltype}_list_{filter}_{file_tag}"
         pd.set_option('display.max_rows', None)
-        df.to_csv("{}/{}.csv".format(data_path, fname))
-        df.to_excel("{}/{}.xlsx".format(data_path, fname))
+        df.to_csv("{}/{}.csv".format(cf.data_path, fname))
+        df.to_excel("{}/{}.xlsx".format(cf.data_path, fname))
         if prt:
             print(df[fields])
             print(f"  {len(df)} {ltype} found")
-            print(f"\nData for {ltype} exported to {fname}.csv and .xlsx in folder /{data_path}\n")
+            print(f"\nData for {ltype} exported to {fname}.csv and .xlsx in folder /{cf.data_path}\n")
 
     def _print1(self, plist, ltype):
         print('', *plist, sep='\n')
@@ -67,7 +67,7 @@ class BatchJob():
     def execute(self):
         try:
             self.batch.execute()
-        except socket.error:
+        except:
             pass
         return self.batch_resp
 
@@ -93,7 +93,7 @@ class Auth:
         pass
 
     def check(self):
-        filelist = [credentials, token, group_credentials, group_token]
+        filelist = [cf.credentials, cf.token, cf.group_credentials, cf.group_token]
         file_exists = [os.path.isfile(i) for i in filelist]
         [print(f"File = {i[0]} exists = {i[1]}") for i in zip(filelist, file_exists)]
         if not file_exists[0]:
@@ -104,26 +104,29 @@ class Auth:
             exit()
         yes_no = input("Generate token for projects, SAs, drives? y/n: ")
         if yes_no.lower() in ["y", "yes"]:
-            self.projects(credentials, token)
+            self.projects(cf.credentials, cf.token)
         gyes_no = input("Generate token for groups? y/n: ")
         if gyes_no.lower() in ["y", "yes"]:
-            self.groups(group_credentials, group_token)
+            self.groups(cf.group_credentials, cf.group_token)
         exit()
 
-    def projects(self, credentials=credentials, token=token):
+    def projects(self, credentials=cf.credentials, token=cf.token):
         """Create an auth token for accessing and changing projects,
         service accounts, json keys and drives"""
         self.get_token(credentials, self.scopes_proj, token)
 
-    def groups(self, credentials=credentials, group_token=group_token):
+    def groups(self, credentials=cf.credentials, group_token=cf.group_token):
         """Create an auth token for adding/removing group members"""
         self.get_token(credentials, self.scopes_group, group_token)
 
-    def all(self, credentials=credentials, token=token):
+    def all(self, credentials=cf.credentials, token=cf.token):
         """Create an auth token with APIs enabled for projects and groups"""
         self.get_token(credentials, self.scopes_all, token)
 
     def get_token(self, credentials, scopes, token):
+        if not credentials or os.path.isfile(credentials[0]):
+            print(f"Credentials file is missing. Download from Google console and save as {credentials}")
+            exit()
         credentials = glob(credentials)
         creds = None
         if os.path.exists(token):
@@ -141,3 +144,24 @@ class Auth:
                     creds = flow.run_console()
             with open(token, "wb") as tkn:
                 pickle.dump(creds, tkn)
+        else:
+            print("Both credentials and token exist and appear to be valid")
+            print(f"credentials = {credentials[0]} and token = {token}")
+
+
+class Link():
+    """Create a symlink between safire's directories and another location"""
+
+    def dirs(self):
+        cwd = os.path.dirname(os.path.realpath(__file__))
+        dest = f"{str(Path.home())}/safire"
+        dest1 = input(f"Choose dir to link. To keep default = {dest} press Enter: ")
+        if dest1:
+            dest = dest1
+        if os.path.exists(dest):
+            print(f"Directory {dest} already exists. Exiting.")
+            exit()
+        print(f"Linking {cwd} to {dest}")
+        if os.path.isdir(dest):
+            os.unlink(dest)
+        os.symlink(cwd, dest)

@@ -1,9 +1,7 @@
-## __SAFIRE__
-### A flexible tool to create and delete Google / GSuite service accounts to be used with shared drives.
+### __SAFIRE__
+##### A flexible tool to create and delete GSuite projects, service accounts and jsons which can be used with shared drives.
 
-### Create projects, SAs, jsons/keys for SAs, group members and shared drives.
-
-### BONUSs: `safire list all` will create both csv and xlsx files listing name/unique id/etc. for all projects, service accounts, shared drives, groups and group members for your account. Handy for use with other apps and scripts.
+__BONUS__:  `safire list all` will create both csv and xlsx files listing name/unique id/etc. for all projects, service accounts, shared drives, groups and group members for your account. Handy for use with other apps and scripts.
 
 - Simple usage syntax: e.g. `safire list projects`
 - Available main commands:
@@ -21,8 +19,16 @@
     - groups
     - members
 
-Before running safire you will need one project (new or old is fine) with several apis enabled.
-- If no project exists go to https://console.cloud.google.com/projectcreate to create one in your main account
+__Recommended to run safire__: 
+- Python 3.7 or higher
+- You can run safire without install from the directory holding `safire.py` (e.g. `cd /opt/safire/safire`; `./safire.py list projects`) 
+- To install and run from anywhere on your machine go to /safire dir (not /safire/safire) and run `sudo -H pip3 install --upgrade pip`
+  - Use a recent version of pip that runs with pyproject.toml rather than setup.py (try pip install --upgrade pip)
+
+__Setup of safire__
+
+Before running safire you will need one gsuite project (new or old is fine) with several apis enabled.
+- If no project exists go to https://console.cloud.google.com/projectcreate to create one in your main gsuite account
 - Then go to https://console.cloud.google.com/apis/library. Ensure you choose your main project (dropdown at the top of the page), then enable the following APIs:
 
     [ __You only need to do this once.__ ]
@@ -41,13 +47,15 @@ Once you have enabled the above APIs then go to this page
 - For Application type choose `Desktop app` and name it as you like ( 'safire' or anything)
 - Click Create
 - Finally choose `Download JSON`
-- You will use this JSON to create a token which allows you access to your account and gives you permission to create projects, service accounts, etc. Keep one copy of this JSON in a safe place, then put a copy named `creds.json` in the `safire/creds` folder [specified in your config.py file - you can change the location if you like]
+- You will use this JSON to create a token which allows you access to your account and gives you permission to create projects, service accounts, etc. 
+  - Keep one copy of this JSON in a safe place, then put a copy named `creds.json` in the `~/safire/creds` folder [specified in your config.py file - you can change the location if you like]
 
 Once you have this initial project created, all the APIs above enabled and have created/downloaded the credentials creds.json you are ready to use safire.
 
 The command line is very flexible. You can quickly and easily 
-- create projects
-- create and delete service accounts(SAs) and json keys (that let you access shared drives and copy/sync/move files), 
+- create projects via `safire add projects 5` will add 5 projects
+- create and delete service accounts(SAs) via `safire add sas proj000` will add 
+- create and delte json keys (that let you access shared drives and copy/sync/move files)
 - add the SA emails to groups and shared drives to use with tools like sasync, cloudplow/cloudbox, crop etc.  
 
 `Don't be afraid to play with the commands. You can fix almost anything by deleting and recreating components in a few minutes.  [The exception being projects, which you should not delete as they go into a 30-day holding bin before being fully deleted, and count against your project quota.]`

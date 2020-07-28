@@ -9,8 +9,12 @@ from base64 import b64decode
 from glob import glob
 from json import loads
 from time import sleep
-from config import *
-from utils import *
+# from config import *
+# from utils import *
+# import safire.config as cf
+# import safire.utils as ut
+import config as cf
+import utils as ut
 
 
 class Commands:
@@ -22,31 +26,32 @@ class Commands:
         self.list = List()
         self.add = Add()
         self.remove = Remove()
-        self.auth = Auth()
+        self.auth = ut.Auth()
         self.rename = Rename()
+        self.link = ut.Link()
         # alias commands for ease of use. e.g. 'safire add projects' = 'safire create projects'
         self.create = self.add
         self.enable = self.add
         self.delete = self.remove
 
 
-class List(Help):
+class List(ut.Help):
     """List drives, projects, service accounts (SAs), SA json keys, groups and group members. 
     In most cases a filter can be applied."""
 
     def __init__(self):
         super(List, self).__init__()
 
-    def drives(self, filter="", file_tag="", token=token, prt=True):
+    def drives(self, filter="", file_tag="", token=cf.token, prt=True):
         """List team/shared drives. Match 'filter'"""
         drivelist = []
-        resp = {f"{nPT}": None}
-        drive = self._svc(*DRIVE, token)
-        while nPT in resp:
+        resp = {f"{cf.nPT}": None}
+        drive = self._svc(*cf.DRIVE, token)
+        while cf.nPT in resp:
             resp = (drive.drives().list(
-                fields=f"{nPT}, drives(id,name)",
+                fields=f"{cf.nPT}, drives(id,name)",
                 pageSize=100,
-                pageToken=resp[f"{nPT}"],
+                pageToken=resp[f"{cf.nPT}"],
             ).execute())
             drivelist += resp["drives"]
         drivelist = [i for i in drivelist if str(filter) in i["name"]]
@@ -54,20 +59,20 @@ class List(Help):
             return drivelist
         self._export(drivelist, filter, file_tag, ['id', 'name'], 'drives', prt)
 
-    def projects(self, filter="", file_tag="", token=token, prt=True):
+    def projects(self, filter="", file_tag="", token=cf.token, prt=True):
         """List projects. Match 'filter'"""
-        cloud = self._svc(*CLOUD, token)
+        cloud = self._svc(*cf.CLOUD, token)
         plist = cloud.projects().list().execute()["projects"]
         plist = [i for i in plist if str(filter) in i["projectId"]]
         if not prt:
             return [i['projectId'] for i in plist]
         self._export(plist, filter, file_tag, ['projectNumber', 'projectId', 'name'], 'projects', prt)
 
-    def sas(self, filter="", file_tag="", token=token, prt=True):
+    def sas(self, filter="", file_tag="", token=cf.token, prt=True):
         """List service accounts for projects. Projects match 'filter'"""
         svcacctlist, sa_summary = [], []
         projId_list = self.projects(filter, file_tag, token, False)
-        iam = self._svc(*IAM, token)
+        iam = self._svc(*cf.IAM, token)
         for project in sorted(projId_list):
             try:
                 resp = (iam.projects().serviceAccounts().list(name="projects/" + project,
@@ -84,20 +89,20 @@ class List(Help):
             self._export(svcacctlist, filter, file_tag, ['email'], 'svc_accts')
         print('\nSummary:', *sa_summary, sep='\n')
 
-    def groups(self, filter="", file_tag="", group_token=group_token, prt=True):
+    def groups(self, filter="", file_tag="", group_token=cf.group_token, prt=True):
         """List groups in the authorized account. Match 'filter'"""
-        svc = self._svc(*ADMIN, group_token)
+        svc = self._svc(*cf.ADMIN, group_token)
         grouplist = svc.groups().list(customer="my_customer").execute()["groups"]
         grouplist = [i for i in grouplist if str(filter) in i["email"]]
         if not prt:
             return [i['email'] for i in grouplist]
         self._export(grouplist, filter, file_tag, ['id', 'email', 'directMembersCount'], 'groups', prt)
 
-    def members(self, filter="", file_tag="", group_token=group_token, prt=True):
+    def members(self, filter="", file_tag="", group_token=cf.group_token, prt=True):
         """List members in groups. Groups match 'filter'"""
         memberslist, member_summary = [], []
         group_list = self.groups(filter, file_tag, group_token, False)
-        svc = self._svc(*ADMIN, group_token)
+        svc = self._svc(*cf.ADMIN, group_token)
         for group in group_list:
             try:
                 response = []
@@ -115,7 +120,7 @@ class List(Help):
         self._export(memberslist, filter, file_tag, ["email", "role"], 'members')
         print('\nSummary:', *member_summary, sep='\n')
 
-    def jsons(self, sa_path=sa_path, filter="", file_tag="", prt=True):
+    def jsons(self, sa_path=cf.sa_path, filter="", file_tag="", prt=True):
         """alias: jsons = keys. List service account jsons/keys in the svcaccts folder. Match 'filter'"""
         keys = glob("%s/*.json" % sa_path)
         json_keys = []
@@ -143,7 +148,7 @@ class List(Help):
         self.jsons()
 
 
-class Add(Help):
+class Add(ut.Help):
     """Add projects, drives, service accounts(SAs), SA keys/jsons and group members"""
 
     def __init__(self):
@@ -151,15 +156,15 @@ class Add(Help):
         self._list = List()
 
     def projects(self,
-                 num_new_projects=num_new_projects,
-                 next_project_num=next_project_num,
-                 project_prefix=project_prefix,
-                 token=token,
+                 num_new_projects=cf.num_new_projects,
+                 next_project_num=cf.next_project_num,
+                 project_prefix=cf.project_prefix,
+                 token=cf.token,
                  ppad=4):
         """Create projects in authorized account. Usage: 'safire add projects 1'. Uses defaults in config 
         if none specified."""
-        cloud = self._svc(*CLOUD, token)
-        batch = BatchJob(cloud)
+        cloud = self._svc(*cf.CLOUD, token)
+        batch = ut.BatchJob(cloud)
         new_projs = []
         for _ in range(num_new_projects):
             new_proj = self._pre_pad(project_prefix, ppad, next_project_num)
@@ -174,12 +179,12 @@ class Add(Help):
         for proj in new_projs:
             self.apis(proj)
 
-    def apis(self, filter="", svcs_to_enable=svcs_to_enable, token=token, prt=False):
+    def apis(self, filter="", svcs_to_enable=cf.svcs_to_enable, token=cf.token, prt=False):
         """Enables apis for projects. 'drive' and 'iam' apis by default. Automatic when projects are
         created but can be run manually also."""
-        svcusage = self._svc(*SVCUSAGE, token)
+        svcusage = self._svc(*cf.SVCUSAGE, token)
         projId_list = self._list.projects(filter, "", token, prt)
-        batch = BatchJob(svcusage)
+        batch = ut.BatchJob(svcusage)
         svcs_to_enable = [i + '.googleapis.com' for i in svcs_to_enable]
         for project in projId_list:
             for svc1 in svcs_to_enable:
@@ -189,24 +194,24 @@ class Add(Help):
 
     def sas(self,
             filter="",
-            sas_per_project=sas_per_project,
+            sas_per_project=cf.sas_per_project,
             file_tag="",
-            email_prefix=email_prefix,
-            next_sa_num=next_sa_num,
+            email_prefix=cf.email_prefix,
+            next_sa_num=cf.next_sa_num,
             prt=False,
             check_all=False):
         """Create N service accounts/SAs in projects which match 'filter'. Usage: 'safire add sas 5 xyz'
          will add 5 SAs to all projects containing 'xys' if fewer than 100 exist. Will not overwrite SAs."""
-        iam = self._svc(*IAM, token)
-        projId_list = self._list.projects(filter, file_tag, token, prt)
+        iam = self._svc(*cf.IAM, cf.token)
+        projId_list = self._list.projects(filter, file_tag, cf.token, prt)
         all_sas = []
         # if check_all:
         #     for project in projId_list:
         #         resp, _ = self._list.sas(project, file_tag, token, False)
         #         all_sas += resp
         for project in projId_list:
-            batch = BatchJob(iam)
-            sa_emails, _ = self._list.sas(project, file_tag, token, False)
+            batch = ut.BatchJob(iam)
+            sa_emails, _ = self._list.sas(project, file_tag, cf.token, False)
             all_sas = all_sas + sa_emails
             count = min(sas_per_project, 100 - len(sa_emails))
             print(len(sa_emails), "SAs exist. Creating", count, "SAs in project", project)
@@ -216,29 +221,29 @@ class Add(Help):
             for _ in range(count):
                 while [s for s in all_sas if str(next_sa_num) in s.split('@')[0]]:
                     next_sa_num += 1
-                sa_id = self._pre_pad(email_prefix, spad, next_sa_num)
+                sa_id = self._pre_pad(email_prefix, cf.spad, next_sa_num)
                 new_sas.append(sa_id)
                 next_sa_num += 1
                 name = f"projects/{project}"
                 body = {"accountId": sa_id, "serviceAccount": {"displayName": sa_id}}
                 batch.add(iam.projects().serviceAccounts().create(name=name, body=body))
             batch.execute()
-            sleep(sleep_time / 10)
+            sleep(cf.sleep_time / 10)
 
     def jsons(self,
               filter="",
-              sa_path=sa_path,
-              next_json_num=next_json_num,
-              json_prefix=json_prefix,
-              jpad=jpad,
+              sa_path=cf.sa_path,
+              next_json_num=cf.next_json_num,
+              json_prefix=cf.json_prefix,
+              jpad=cf.jpad,
               file_tag="",
-              token=token,
+              token=cf.token,
               prt=False):
         """Create and download json/key files to svcaccts folder. Add to TDs and/or groups."""
-        iam = self._svc(*IAM, token)
+        iam = self._svc(*cf.IAM, token)
         projId_list = self._list.projects(filter, file_tag, token, prt)
         for project in sorted(projId_list):
-            batch = BatchJob(iam)
+            batch = ut.BatchJob(iam)
             _, sa_uniqueId = self._list.sas(project, file_tag, token, prt)
             print(f"Downloading {str(len(sa_uniqueId))} SA keys in project {project}")
             for sa in sa_uniqueId:
@@ -261,7 +266,7 @@ class Add(Help):
 
     def drive(self, td_name):
         """Create a team/shared drive. Usage: 'safire add drive some_name'"""
-        drive = self._svc(*DRIVE, token)
+        drive = self._svc(*cf.DRIVE, cf.token)
         body = {'name': td_name}
         driveId = drive.drives().create(body=body, requestId=str(uuid.uuid4()), fields='id,name').execute().get('id')
         print(f"  Drive ID for {td_name} is {driveId}")
@@ -274,17 +279,17 @@ class Add(Help):
             print(f"Creating {td_name}")
             self.drive(td_name.rstrip())
 
-    def members(self, project_filter, group_filter, retry=5, file_tag="", group_token=group_token, prt=False):
+    def members(self, project_filter, group_filter, retry=5, file_tag="", group_token=cf.group_token, prt=False):
         """'add members' requires two arguments. Both 'project_filter' and 'group_filter' can be either the full
         project/group name or a partial name which matches some projects/groups. 
         You can add SA emails from multiple projects to multiple groups if you wish."""
-        admin = self._svc(*ADMIN, group_token)
-        projId_list = self._list.projects(project_filter, file_tag, token, prt)
+        admin = self._svc(*cf.ADMIN, group_token)
+        projId_list = self._list.projects(project_filter, file_tag, cf.token, prt)
         group_list = self._list.groups(group_filter, file_tag, group_token, prt)
         for group in group_list:
             for project in projId_list:
-                batch = BatchJob(admin)
-                sa_emails, _ = self._list.sas(project, file_tag, token, False)
+                batch = ut.BatchJob(admin)
+                sa_emails, _ = self._list.sas(project, file_tag, cf.token, False)
                 if len(sa_emails) == 0:
                     print("No service accounts found in", project)
                     continue
@@ -304,34 +309,37 @@ class Add(Help):
 
     def user(self, td_id, user, role='organizer'):
         """Add user (typically group name) to a shared/team drive. Usage: 'safire add someTDid mygroup@domain.com'"""
-        drive = self._svc(*DRIVE, token)
+        drive = self._svc(*cf.DRIVE, cf.token)
         body = {'type': 'user', 'role': role, 'emailAddress': user}
         return drive.permissions().create(body=body, fileId=td_id, supportsAllDrives=True,
                                           fields='id').execute().get('id')
 
 
-class Remove(Help):
+class Remove(ut.Help):
     """Delete sas, jsons/keys, drives and group members. Note: 'remove' and 'delete' are equivalent commands"""
 
     def __init__(self):
         super(Remove, self).__init__()
         self._list = List()
 
-    def sas(self, project_filter, token=token, file_tag="", prt=False):
+    def sas(self, project_filter, token=cf.token, file_tag="", prt=False):
         """Usage: 'safire remove sas filter' where filter is a string to match the projects from which
         you want to delete service accounts. To remove all SAs for all projects use "" as your filter"""
         projId_list = self._list.projects(project_filter, file_tag, token, prt)
-        iam = self._svc(*IAM, token)
+        iam = self._svc(*cf.IAM, token)
         for project in projId_list:
             sas, _ = self._list.sas(project, file_tag, token, False)
-            batch = BatchJob(iam)
+            if len(sas) == 0:
+                print(f"0 service accounts in {project}. Moving to next project")
+                continue
+            batch = ut.BatchJob(iam)
             print(f"Removing {len(sas)} service accounts from {project}")
             for i in sas:
                 name = f"projects/{project}/serviceAccounts/{i}"
                 batch.add(iam.projects().serviceAccounts().delete(name=name))
             batch.execute()
 
-    def jsons(self, filter="", sa_path=sa_path):
+    def jsons(self, filter="", sa_path=cf.sa_path):
         """Remove json keys from svcaccts path"""
         _, _, files = next(os.walk(sa_path))
         if not files:
@@ -346,10 +354,10 @@ class Remove(Help):
         else:
             print("Deletion of json files aborted")
 
-    def members(self, group_filter, retry=5, batch_size=100, file_tag="", group_token=group_token, prt=False):
+    def members(self, group_filter, retry=5, batch_size=100, file_tag="", group_token=cf.group_token, prt=False):
         """Remove members from groups. Match 'filter'"""
-        admin = self._svc(*ADMIN, group_token)
-        batch = BatchJob(admin)
+        admin = self._svc(*cf.ADMIN, group_token)
+        batch = cf.BatchJob(admin)
         group_list = self._list.groups(group_filter, file_tag, group_token, prt)
         for group in group_list:
             group_members = self._list.members(group, file_tag, group_token, prt)
@@ -359,14 +367,14 @@ class Remove(Help):
                 for member in group_members[:batch_size]:
                     batch.add(admin.members().delete(groupKey=group, memberKey=member))
                 batch.execute()
-                batch = BatchJob(admin)
+                batch = ut.BatchJob(admin)
                 group_members = self._list.members(group, file_tag, group_token, prt)
         print(f"{len(group_members)} members remaining in {group} (excluding OWNER)")
 
-    def drive(self, teamDriveId, token=token):
+    def drive(self, teamDriveId, token=cf.token):
         """Delete a team/shared drive. Usage: 'safire add teamdrive unique ID'. USE CAREFULLY!
         Does not work with non-empty drives."""
-        drvsvc = self._svc(*DRIVE, token)
+        drvsvc = self._svc(*cf.DRIVE, token)
         drives = self._list.drives(teamDriveId, "", token, False)
         print("Drives to be removed:", *drives, sep='\n')
         yes_no = input("Confirm you want to delete all of these drives. y/n: ")
@@ -376,16 +384,16 @@ class Remove(Help):
             print(f"Removing drive: {drive['name']} with id: {drive['id']}")
             drvsvc.drives().delete(driveId=str(drive['id'])).execute()
 
-    def drives(self, input_file, token=token):
+    def drives(self, input_file, token=cf.token):
         """Delete team/shared drives. Usage: 'safire add teamdrive some_filename' with unique IDs. USE CAREFULLY"""
         td_list = open(input_file, 'r')
         for teamDriveId in td_list:
             print(f"Deleting {teamDriveId}")
             self.drive(teamDriveId.rstrip())
 
-    def user(self, td_id, user, role='organizer', token=token):
+    def user(self, td_id, user, role='organizer', token=cf.token):
         """Remove user (typically group name) from a shared/team drive. Usage: 'safire remove someTDid mygroup@domain.com'"""
-        drvsvc = self._svc(*DRIVE, token)
+        drvsvc = self._svc(*cf.DRIVE, token)
         return drvsvc.permissions().delete(permissionId=user, fileId=td_id, supportsAllDrives=True,
                                            fields='id').execute().get('id')
 
@@ -395,7 +403,7 @@ class Rename:
     Usage: 'safire rename jsons email'  [choice email, email_seq, uniq, seq]
     Renaming is repeatable. Can always delete and redownload keys if needed."""
 
-    def jsons(self, rename_type, dir=f"{sa_path}/"):
+    def jsons(self, rename_type, dir=f"{cf.sa_path}/"):
         """Usage: 'safire rename jsons email'  [choice email, email_seq, uniq, seq]"""
         import json, os
         filelist = os.listdir(dir)
@@ -421,13 +429,6 @@ class Rename:
                 except:
                     continue
         print('\nCurrent filenames:', *sorted(os.listdir(dir)), sep='\n')
-
-
-def __init__(self):
-    from pathlib import Path
-    global cwd
-    cwd = Path(__file__).parents[0]
-    exec(open(f"{cwd}/config.py").read())
 
 
 def main():
