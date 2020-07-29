@@ -20,8 +20,11 @@ __BONUS__:  `safire list all` will create both csv and xlsx files listing name/u
     - members
     - drives (yes, safire can create and delete shared drives)
 
-- User configuration information such as project name/prefix, number of projects to create, service account prefix and so on are in the config.py file in the /safire/safire folder [For now. Location may be updated to /opt/safire soon.]
+- User configuration information such as project name/prefix, number of projects to create, service account prefix and so on are in the `config.py` file in the /safire/safire folder. [Apologies for the double folder - useful for pip install structure.]
+
 - Credential files and files created by safire are by default in the user home (~ in linux) directory under safire/creds, safire/data and safire/svcaccts. This location can be changed in config.py
+
+- NOTE: Commands below are in the format `safire command subcommand` This assumes you pip install the script. You can run it directly without installing by navigating to /safire/safire and using `./safire.py command subcommand`
 
 __Recommended to run safire__: 
 - Python 3.7 or higher
@@ -68,15 +71,15 @@ The command line is very flexible. You can quickly and easily
 
 `Don't be afraid to play with the commands. You can fix almost anything by deleting and recreating components in a few minutes.  [The exception being projects, which you should not delete as they go into a 30-day holding bin before being fully deleted, and count against your project quota.]`
 
-A typical, simple flow of commands 
+A typical, simple flow to use safire: 
 
 - download a credentials json 
-- create auth token to enable safire to access your account: `./safire auth all` will create two tokens, one to access projects/drives/etc and one to access groups 
-- add projects: `./safire add projects 5` will add 5 projects using the prefix in your config.py file
+- create auth token to enable safire to access your account: `safire auth all` will create two tokens, one to access projects/drives/etc and one to access groups 
+- add projects: `safire add projects 5` will add 5 projects using the prefix in your config.py file
 - enable apis: happens automatically when you add projects, but can be done manually
-- create sas: `./safire add sas ""` will add sas to all or your projects using # of SAs in config.py 
-- download json keys: `./safire add jsons ""` will create and download service account json keys to the folder in config.py
-- add members to group: `./safire add members "" mygroup@domain.com` will add all SA emails from all projects to a group called mygroup@domain.com
+- create sas: `safire add sas ""` will add sas to all or your projects using # of SAs in config.py 
+- download json keys: `safire add jsons ""` will create and download service account json keys to the folder in config.py
+- add members to group: `safire add members "" mygroup@domain.com` will add all SA emails from all projects to a group called mygroup@domain.com
 - add group to shared (team) drive
 
 
