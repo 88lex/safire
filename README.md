@@ -20,12 +20,18 @@ __BONUS__:  `safire list all` will create both csv and xlsx files listing name/u
     - members
     - drives (yes, safire can create and delete shared drives)
 
+- User configuration information such as project name/prefix, number of projects to create, service account prefix and so on are in the config.py file in the /safire/safire folder [For now. Location may be updated to /opt/safire soon.]
+- Credential files and files created by safire are by default in the user home (~ in linux) directory under safire/creds, safire/data and safire/svcaccts. This location can be changed in config.py
+
 __Recommended to run safire__: 
 - Python 3.7 or higher
 - You can run safire without install from the directory holding `safire.py` (e.g. `cd /opt/safire/safire`; `./safire.py list projects`) 
   - To do this you must first run `pip install -r requirements.txt`
-- To install and run from anywhere on your machine go to /safire dir (not /safire/safire) and run `sudo -H pip3 install --upgrade pip`
-  - Use a recent version of pip that runs with pyproject.toml rather than setup.py (try pip install --upgrade pip)
+- If you prefer to install and run safire from anywhere on your machine
+  - Navigate to to the base /safire dir where you git cloned safire (not /safire/safire) 
+  - Use a recent version of pip that runs with pyproject.toml rather than setup.py 
+  - If you want to upgrade pip use `pip install --upgrade pip` or `sudo -H pip3 install --upgrade pip`
+  - From your /safire folder run `pip install .`  If successful then you should now be able to 
 
 __Setup of safire__
 
