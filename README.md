@@ -35,12 +35,12 @@ Before running safire you will need one gsuite project (new or old is fine) with
 
     [ __You only need to do this once.__ ]
 
-    - Admin
-    - Drive
-    - Identity and Access Management (IAM)
-    - Cloud Resource Manager
-    - Service Usage
-    - Service Management
+    - Admin SDK
+    - Google Drive API
+    - Identity and Access Management (IAM) API
+    - Cloud Resource Manager API
+    - Service Usage API
+    - Service Management API
 
 Once you have enabled the above APIs then go to this page 
 - https://console.cloud.google.com/apis/credentials
@@ -57,7 +57,7 @@ Once you have this initial project created, all the APIs above enabled and have 
 The command line is very flexible. You can quickly and easily 
 - create projects via `safire add projects 5` will add 5 projects
 - create and delete service accounts(SAs) via `safire add sas proj000` will add 
-- create and delte json keys (that let you access shared drives and copy/sync/move files)
+- create and delete json keys (that let you access shared drives and copy/sync/move files)
 - add the SA emails to groups and shared drives to use with tools like sasync, cloudplow/cloudbox, crop etc.  
 
 `Don't be afraid to play with the commands. You can fix almost anything by deleting and recreating components in a few minutes.  [The exception being projects, which you should not delete as they go into a 30-day holding bin before being fully deleted, and count against your project quota.]`
