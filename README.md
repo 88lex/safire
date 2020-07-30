@@ -1,5 +1,5 @@
 ### __SAFIRE__
-#### A flexible tool to create and delete GSuite projects, service accounts and jsons which can be used with shared drives.
+#### A flexible tool to create and delete GSuite projects, service accounts and jsons which can be used with shared/team drives.
 
 __BONUS__:  `safire list all` will create both csv and xlsx files listing name/unique id/etc. for all projects, service accounts, shared drives, groups and group members for your account. Handy for use with other apps and scripts.
 

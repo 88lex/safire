@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "safire"
-version = "0.1.1"
+version = "0.1.2"
 description = "A flexible tool to create and delete Google / GSuite service accounts to be used with shared drives."
 authors = ["88lex"]
 keywords = ["gsuite", "sas", "service accounts"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6.1"
 requests = "^2.24.0"
 fire = "^0.3.1"
 google-api-python-client = "^1.10.0"
