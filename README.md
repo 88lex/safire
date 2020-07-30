@@ -2,7 +2,7 @@
 #### A flexible tool to create and delete GSuite projects, service accounts and jsons which can be used with shared/team drives.
 
 You can find safire at either pypi ( https://pypi.org/project/safire/ ) or github ( https://github.com/88lex/safire )
-- 
+
 
 __BONUS__:  `safire list all` will create both csv and xlsx files listing name/unique id/etc. for all projects, service accounts, shared drives, groups and group members for your account. Handy for use with other apps and scripts.
 
@@ -24,6 +24,7 @@ __BONUS__:  `safire list all` will create both csv and xlsx files listing name/u
     - drives (yes, safire can create and delete shared drives)
 
 - User configuration information such as project name/prefix, number of projects to create, service account prefix and so on are in the `config.py` file in the /safire/safire folder.
+ - All options can be set in either the config.py or via command line flags (-h or --help for any commands)
  - If you install with pip then you can find the location of config.py with `pip list -v | grep safire`, then edit as needed
 
 - Credential files and files created by safire are by default in the user home (~ in linux) directory under safire/creds, safire/data and safire/svcaccts. This location can be changed in config.py
