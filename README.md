@@ -1,6 +1,9 @@
 ### __SAFIRE__
 #### A flexible tool to create and delete GSuite projects, service accounts and jsons which can be used with shared/team drives.
 
+You can find safire at either pypi ( https://pypi.org/project/safire/ ) or github ( https://github.com/88lex/safire )
+- 
+
 __BONUS__:  `safire list all` will create both csv and xlsx files listing name/unique id/etc. for all projects, service accounts, shared drives, groups and group members for your account. Handy for use with other apps and scripts.
 
 - Simple usage syntax: e.g. `safire list projects`
@@ -20,7 +23,8 @@ __BONUS__:  `safire list all` will create both csv and xlsx files listing name/u
     - members
     - drives (yes, safire can create and delete shared drives)
 
-- User configuration information such as project name/prefix, number of projects to create, service account prefix and so on are in the `config.py` file in the /safire/safire folder. [Apologies for the double folder - useful for pip install structure.]
+- User configuration information such as project name/prefix, number of projects to create, service account prefix and so on are in the `config.py` file in the /safire/safire folder.
+ - If you install with pip then you can find the location of config.py with `pip list -v | grep safire`, then edit as needed
 
 - Credential files and files created by safire are by default in the user home (~ in linux) directory under safire/creds, safire/data and safire/svcaccts. This location can be changed in config.py
 
@@ -87,11 +91,11 @@ A typical, simple flow to use safire:
 
 __list__
 
-    `safire list`
+    safire list
 
 SYNOPSIS
 
-    `safire list COMMAND`
+    safire list COMMAND
 
 DESCRIPTION
 
@@ -296,4 +300,4 @@ COMMANDS
 
 
 ## CREDITS:
-   Many ideas, some bits of code and inspiration from spazzlo, fionera and generally from l3uddz, ncw and others - all of whose projects are excellent and some of them do some/all of what fire does. If I forgot to mention you here let me know.
+   Many ideas, some bits of code and inspiration from spazzlo, fionera and generally from l3uddz, ncw and others - all of whose projects are excellent and some of them do some/all of what safire does. If I forgot to mention you here let me know.

@@ -12,6 +12,7 @@ from googleapiclient.discovery import build
 
 import config as cf
 
+
 class Help:
     """These small functions support repeated activities in other classes/functions"""
 
@@ -121,7 +122,8 @@ class Auth:
 
     def all(self, credentials=cf.credentials, token=cf.token):
         """Create an auth token with APIs enabled for projects and groups"""
-        self.get_token(credentials, self.scopes_all, token)
+        self.projects(cf.credentials, cf.token)
+        self.groups(cf.group_credentials, cf.group_token)
 
     def get_token(self, credentials, scopes, token):
         if not credentials or os.path.isfile(credentials[0]):
@@ -143,6 +145,7 @@ class Auth:
                 else:
                     creds = flow.run_console()
             with open(token, "wb") as tkn:
+                print("Writing/updating token")
                 pickle.dump(creds, tkn)
         else:
             print("Both credentials and token exist and appear to be valid")
