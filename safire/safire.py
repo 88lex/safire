@@ -2,6 +2,7 @@
 
 import os
 import sys
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import uuid
 from base64 import b64decode
 from glob import glob
@@ -11,8 +12,6 @@ from time import sleep
 import config as cf
 import fire
 import utils as ut
-
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 
 class Commands:
@@ -431,8 +430,9 @@ class Add(ut.Help):
                 add_sas = [i for i in sa_emails if i not in group_members]
                 if len(add_sas) == 0:
                     continue
-                print("Adding", str(len(add_sas)),
-                      "service accounts to group:", group)
+                print(
+                    f"Adding {str(len(add_sas))} SAs to group: {group} from project: {project}"
+                )
                 while add_sas and retry:
                     retry -= 1
                     for email in add_sas:
@@ -442,12 +442,13 @@ class Add(ut.Help):
                                                              "role": "MEMBER"
                                                          }))
                     batch.execute()
+                    sleep(cf.sleep_time)
                     group_members = self._list.members(group_filter, file_tag,
                                                        group_token, prt)
                     add_sas = [i for i in sa_emails if i not in group_members]
-            print(
-                f"{len(sa_emails)-len(add_sas)} SA emails from {project} are in {group}. {len(add_sas)} failed."
-            )
+                print(
+                    f"{len(sa_emails)-len(add_sas)} SA emails from {project} are in {group}. {len(add_sas)} failed."
+                )
 
     def user(self, td_id, user, role="organizer"):
         """Add user (typically group name) to a shared/team drive. Usage: 'safire add someTDid mygroup@domain.com'"""
