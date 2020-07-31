@@ -32,24 +32,25 @@ class Help:
     def _export(self, dset, filter, file_tag, fields, ltype, prt=True):
         df = pd.DataFrame(dset)
         fname = f"{ltype}_list_{filter}_{file_tag}"
-        pd.set_option('display.max_rows', None)
+        pd.set_option("display.max_rows", None)
         df.to_csv("{}/{}.csv".format(cf.data_path, fname))
         df.to_excel("{}/{}.xlsx".format(cf.data_path, fname))
         if prt:
             print(df[fields])
             print(f"  {len(df)} {ltype} found")
-            print(f"\nData for {ltype} exported to {fname}.csv and .xlsx in folder /{cf.data_path}\n")
+            print(
+                f"\nData for {ltype} exported to {fname}.csv and .xlsx in folder /{cf.data_path}\n"
+            )
 
     def _print1(self, plist, ltype):
-        print('', *plist, sep='\n')
+        print("", *plist, sep="\n")
         print(f"  {len(plist)} {ltype} found")
 
     def _pre_pad(self, prefix, pad, number):
-        return prefix + (('0' * pad) + str(number))[-pad:]
+        return prefix + (("0" * pad) + str(number))[-pad:]
 
 
-class BatchJob():
-
+class BatchJob:
     def __init__(self, service):
         self.batch = service.new_batch_http_request(callback=self.callback_handler)
         self.batch_resp = []
@@ -58,11 +59,11 @@ class BatchJob():
         self.batch.add(to_add, request_id=request_id)
 
     def callback_handler(self, rid, resp, exception):
-        response = {'request_id': rid, 'exception': None, 'response': None}
+        response = {"request_id": rid, "exception": None, "response": None}
         if exception is not None:
-            response['exception'] = exception
+            response["exception"] = exception
         else:
-            response['response'] = resp
+            response["response"] = resp
         self.batch_resp.append(response)
 
     def execute(self):
@@ -81,12 +82,13 @@ class Auth:
     def __init__(self):
         super(Auth, self).__init__()
         self.scopes_proj = [
-            "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/cloud-platform",
-            "https://www.googleapis.com/auth/iam"
+            "https://www.googleapis.com/auth/drive",
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/iam",
         ]
         self.scopes_group = [
             "https://www.googleapis.com/auth/admin.directory.group",
-            "https://www.googleapis.com/auth/admin.directory.group.member"
+            "https://www.googleapis.com/auth/admin.directory.group.member",
         ]
         self.scopes_all = self.scopes_proj + self.scopes_group
 
@@ -98,10 +100,14 @@ class Auth:
         file_exists = [os.path.isfile(i) for i in filelist]
         [print(f"File = {i[0]} exists = {i[1]}") for i in zip(filelist, file_exists)]
         if not file_exists[0]:
-            print(f"Credentials file is missing. Download from Google console and run 'auth'")
+            print(
+                f"Credentials file is missing. Download from Google console and run 'auth'"
+            )
             exit()
         if not file_exists[2]:
-            print(f"Group credentials file is missing. Download from Google console and run 'auth'")
+            print(
+                f"Group credentials file is missing. Download from Google console and run 'auth'"
+            )
             exit()
         yes_no = input("Generate token for projects, SAs, drives? y/n: ")
         if yes_no.lower() in ["y", "yes"]:
@@ -127,7 +133,9 @@ class Auth:
 
     def get_token(self, credentials, scopes, token):
         if not credentials or os.path.isfile(credentials[0]):
-            print(f"Credentials file is missing. Download from Google console and save as {credentials}")
+            print(
+                f"Credentials file is missing. Download from Google console and save as {credentials}"
+            )
             exit()
         credentials = glob(credentials)
         creds = None
@@ -139,7 +147,9 @@ class Auth:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(credentials[0], scopes)
-                yes_no = input("Run local server with browser? If no, generate console link. y/n: ")
+                yes_no = input(
+                    "Run local server with browser? If no, generate console link. y/n: "
+                )
                 if yes_no.lower() in ["y", "yes"]:
                     creds = flow.run_local_server()
                 else:
@@ -152,7 +162,7 @@ class Auth:
             print(f"credentials = {credentials[0]} and token = {token}")
 
 
-class Link():
+class Link:
     """Create a symlink between safire's directories and another location"""
 
     def dirs(self):
