@@ -21,7 +21,7 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name='safire',
-    version='0.1.9',
+    version='0.2.0',
     description='A flexible tool to create and delete Google / GSuite service accounts to be used with shared drives.',
     python_requires='==3.*,>=3.6.1',
     author='88lex',
