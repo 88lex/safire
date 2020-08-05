@@ -3,6 +3,8 @@
 import os
 import sys
 
+from config import sleep_time
+
 # sys.path.insert(0, os.path.abspath("../"))
 sys.path.append("..")
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
@@ -391,6 +393,7 @@ class Add(ut.Help):
                     with open("%s/%s.json" % (sa_path, json_name), "w+") as f:
                         f.write(k)
                     next_json_num += 1
+            sleep(cf.sleep_time)
 
     keys = jsons
 
