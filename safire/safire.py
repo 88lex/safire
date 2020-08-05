@@ -233,7 +233,8 @@ class Add(ut.Help):
         curr_projects = []
         proj_count = 0
         print(f"Creating {num_new_projects} new projects")
-        while num_new_projects and retry:
+        retries = retry
+        while num_new_projects and retries:
             new_projs = [
                 self._pre_pad(project_prefix, ppad, next_project_num + i)
                 for i in range(num_new_projects)
@@ -243,7 +244,7 @@ class Add(ut.Help):
                     cloud.projects().create(body={"project_id": proj, "name": proj})
                 )
             batch.execute()
-            retry -= 1
+            retries -= 1
             curr_projects = self._list.projects("", "", token, prt)
             proj_count = len(curr_projects)
             num_proj_created = proj_count - start_proj_count
@@ -311,7 +312,8 @@ class Add(ut.Help):
                 len(sa_emails), "SAs exist. Creating", count, "SAs in project", project
             )
             new_sas = []
-            while count and retry:
+            retries = retry
+            while count and retries:
                 for _ in range(count):
                     while [s for s in all_sas if str(next_sa_num) in s.split("@")[0]]:
                         next_sa_num += 1
@@ -327,7 +329,7 @@ class Add(ut.Help):
                         iam.projects().serviceAccounts().create(name=name, body=body)
                     )
                 batch.execute()
-                retry -= 1
+                retries -= 1
                 sa_emails, _ = self._list.sas(project, True, file_tag, cf.token, False)
                 curr_sa_count = len(sa_emails)
                 count = count - curr_sa_count + start_sa_count
@@ -362,7 +364,8 @@ class Add(ut.Help):
             num_sas = len(sa_uniqueId)
             print(f"Downloading {str(len(sa_uniqueId))} SA keys in project {project}")
             resp = []
-            while len(resp) < num_sas and retry:
+            retries = retry
+            while len(resp) < num_sas and retries:
                 for sa in sa_uniqueId:
                     batch.add(
                         iam.projects()
@@ -377,7 +380,7 @@ class Add(ut.Help):
                         )
                     )
                 resp = [i["response"] for i in batch.execute()]
-                retry -= 1
+                retries -= 1
             for i in resp:
                 if i is not None:
                     k = (
@@ -440,8 +443,9 @@ class Add(ut.Help):
                 print(
                     f"Adding {str(len(add_sas))} SAs to group: {group} from project: {project}"
                 )
-                while add_sas and retry:
-                    retry -= 1
+                retries = retry
+                while add_sas and retries:
+                    retries -= 1
                     for email in add_sas:
                         batch.add(
                             admin.members().insert(
@@ -492,7 +496,9 @@ class Remove(ut.Help):
         iam = self._svc(*cf.IAM, token)
         for project in projId_list:
             sas, _ = self._list.sas(project, True, file_tag, token, False)
-            while sas and retry:
+            retries = retry
+            while sas and retries:
+                retries -= 1
                 if len(sas) == 0:
                     print(f"0 service accounts in {project}. Moving to next project")
                     continue
@@ -535,11 +541,12 @@ class Remove(ut.Help):
         group_members = []
         for group in group_list:
             group_members = self._list.members(group, file_tag, group_token, prt)
-            while len(group_members) > 1 and retry:
+            retries = retry
+            while len(group_members) > 1 and retries:
                 print(
                     f"Removing {str(len(group_members))} SAs from group: {group}. Batch = {batch_size}"
                 )
-                retry -= 1
+                retries -= 1
                 for member in group_members[:batch_size]:
                     batch.add(admin.members().delete(groupKey=group, memberKey=member))
                 batch.execute()
