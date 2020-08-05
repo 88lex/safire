@@ -3,8 +3,6 @@
 import os
 import sys
 
-from config import sleep_time
-
 # sys.path.insert(0, os.path.abspath("../"))
 sys.path.append("..")
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
@@ -42,7 +40,7 @@ class Commands:
     Most commands accept a 'filter'to process subsets. If no filter all items are listed."""
 
     def __init__(self):
-        # Init()
+        Init()
         self.list = List()
         self.add = Add()
         self.remove = Remove()
