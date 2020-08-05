@@ -2,6 +2,8 @@
 
 import os
 import sys
+
+sys.path.append("..")
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import pickle
 from glob import glob
@@ -17,6 +19,7 @@ import config as cf
 
 class Help:
     """These small functions support repeated activities in other classes/functions"""
+
     def __init__(self):
         super(Help, self).__init__()
 
@@ -53,8 +56,7 @@ class Help:
 
 class BatchJob:
     def __init__(self, service):
-        self.batch = service.new_batch_http_request(
-            callback=self.callback_handler)
+        self.batch = service.new_batch_http_request(callback=self.callback_handler)
         self.batch_resp = []
 
     def add(self, to_add, request_id=None):
@@ -80,6 +82,7 @@ class Auth:
     """Authorize the app to access your projects, SAs, drives and groups. To generate creds.json go to
     https://developers.google.com/apps-script/api/quickstart/python , click Enable then download a json,
     rename it to creds.json and put a copy in the /creds folder"""
+
     def __init__(self):
         super(Auth, self).__init__()
         self.scopes_proj = [
@@ -97,24 +100,19 @@ class Auth:
         pass
 
     def check(self):
-        filelist = [
-            cf.credentials, cf.token, cf.group_credentials, cf.group_token
-        ]
+        filelist = [cf.credentials, cf.token, cf.group_credentials, cf.group_token]
         file_exists = [os.path.isfile(i) for i in filelist]
-        [
-            print(f"File = {i[0]} exists = {i[1]}")
-            for i in zip(filelist, file_exists)
-        ]
+        [print(f"File = {i[0]} exists = {i[1]}") for i in zip(filelist, file_exists)]
         if not file_exists[0]:
             print(
                 f"Credentials file is missing. Download from Google console and run 'auth'"
             )
-            exit()
         if not file_exists[2]:
             print(
                 f"Group credentials file is missing. Download from Google console and run 'auth'"
+                f"Note that the group credentials file is normally the same as the main projects credentials"
+                f"file - But you can optionally use separate credentials files. Specify in config.py"
             )
-            exit()
         yes_no = input("Generate token for projects, SAs, drives? y/n: ")
         if yes_no.lower() in ["y", "yes"]:
             self.projects(cf.credentials, cf.token)
@@ -143,7 +141,7 @@ class Auth:
                 f"Credentials file is missing. Download from Google console and save as {credentials}"
             )
             exit()
-        credentials = glob(credentials)
+        cred_file = glob(credentials)
         creds = None
         if os.path.exists(token):
             with open(token, "rb") as tkn:
@@ -152,8 +150,7 @@ class Auth:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    credentials[0], scopes)
+                flow = InstalledAppFlow.from_client_secrets_file(cred_file[0], scopes)
                 yes_no = input(
                     "Run local server with browser? If no, generate console link. y/n: "
                 )
@@ -165,17 +162,25 @@ class Auth:
                 print("Writing/updating token")
                 pickle.dump(creds, tkn)
         else:
-            print("Both credentials and token exist and appear to be valid")
-            print(f"credentials = {credentials[0]} and token = {token}")
+            print("Credentials and token exist and appear to be valid")
+            print(f"credentials = {cred_file[0]} and token = {token}")
+            yes_no = input(
+                f"Do you want to delete and regenerate your token file = {token}? y/n: "
+            )
+            if yes_no.lower() in ["y", "yes"]:
+                os.remove(token)
+                self.get_token(credentials, scopes, token)
+            else:
+                print("Finished without creating new token")
 
 
 class Link:
     """Create a symlink between safire's directories and another location"""
+
     def dirs(self):
         cwd = os.path.dirname(os.path.realpath(__file__))
         dest = f"{str(Path.home())}/safire"
-        dest1 = input(
-            f"Choose dir to link. To keep default = {dest} press Enter: ")
+        dest1 = input(f"Choose dir to link. To keep default = {dest} press Enter: ")
         if dest1:
             dest = dest1
         if os.path.exists(dest):

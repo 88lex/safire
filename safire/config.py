@@ -2,8 +2,8 @@
 import os
 from pathlib import Path
 
-###############################################################################
 ### These config variables can be customized for each user as needed        ###
+###############################################################################
 num_new_projects = 1
 max_projects = 100
 next_project_num = 1
@@ -14,18 +14,16 @@ next_json_num = 1
 ###   Prefixes for SA email (required), the project (required) and the downloaded json key (optional)
 email_prefix = "svcacc"
 # Project prefix must be unique across all of Google, not just your account.
-project_prefix = "UniqPrefix"
+project_prefix = ""
 # Leave json_prefix as "" if no json key prefix needed
 json_prefix = ""
 # You can specify a group address here or as a flag in the relevant commands
-group_address = "mygroup@domain.com"
+group_address = ""
 
 ### Config variables below are normally not changed by the user             ###
 ###############################################################################
-###############################################################################
-###############################################################################
 
-# 'dir' = default home dir. Can change to any e.g. = "/somedir/safire"
+# 'dir' = default home dir. Can change to any e.g. = "/opt/safire"
 dir = f"{str(Path.home())}/safire"
 
 # These dirs and files are located below the path set as 'dir ='
@@ -65,12 +63,3 @@ if not os.path.isdir(cred_path):
     os.mkdir(cred_path)
 if not os.path.isdir(data_path):
     os.mkdir(data_path)
-
-### Add working path to creds, service accounts and csv/xlsx files
-# cwd = os.path.dirname(os.path.realpath(__file__))
-# sa_path = f"{cwd}/{sa_path}"
-# credentials = f"{cwd}/{credentials}"
-# token = f"{cwd}/{token}"
-# data_path = f"{cwd}/{data_path}"
-# group_credentials = f"{cwd}/{group_credentials}"
-# group_token = f"{cwd}/{group_token}"
