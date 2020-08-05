@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "safire"
-version = "0.1.8"
+version = "0.1.9"
 description = "A flexible tool to create and delete Google / GSuite service accounts to be used with shared drives."
 authors = ["88lex"]
 keywords = ["gsuite", "sas", "service accounts"]
