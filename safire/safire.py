@@ -40,7 +40,7 @@ class Commands:
     Most commands accept a 'filter'to process subsets. If no filter all items are listed."""
 
     def __init__(self):
-        Init()
+        # Init()
         self.list = List()
         self.add = Add()
         self.remove = Remove()
