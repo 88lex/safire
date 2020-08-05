@@ -2,8 +2,8 @@
 import os
 from pathlib import Path
 
-###############################################################################
 ### These config variables can be customized for each user as needed        ###
+###############################################################################
 num_new_projects = 1
 max_projects = 100
 next_project_num = 1
@@ -22,10 +22,9 @@ group_address = ""
 
 ### Config variables below are normally not changed by the user             ###
 ###############################################################################
-###############################################################################
-###############################################################################
 
 # 'dir' = default home dir. Can change to any e.g. = "/somedir/safire"
+# dir = '/opt/safire'
 dir = f"{str(Path.home())}/safire"
 
 # These dirs and files are located below the path set as 'dir ='
@@ -39,8 +38,8 @@ token = f"{cred_path}/token.pickle"
 # If group is in the same account as your projects/drives then copy from above
 group_credentials = f"{cred_path}/creds.json"
 group_token = f"{cred_path}/grptoken.pickle"
-sleep_time = 5
-retry = 5
+sleep_time = 10
+retry = 10
 nPT = "nextPageToken"
 
 # 'pad' vars set zero padding for names. e.g. jpad=6 yields 000001.json. Set to 1 if no prefix needed.
@@ -65,12 +64,3 @@ if not os.path.isdir(cred_path):
     os.mkdir(cred_path)
 if not os.path.isdir(data_path):
     os.mkdir(data_path)
-
-### Add working path to creds, service accounts and csv/xlsx files
-# cwd = os.path.dirname(os.path.realpath(__file__))
-# sa_path = f"{cwd}/{sa_path}"
-# credentials = f"{cwd}/{credentials}"
-# token = f"{cwd}/{token}"
-# data_path = f"{cwd}/{data_path}"
-# group_credentials = f"{cwd}/{group_credentials}"
-# group_token = f"{cwd}/{group_token}"
