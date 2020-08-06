@@ -205,6 +205,29 @@ class List(ut.Help):
         self.members()
         self.jsons()
 
+    def count(self):
+        """Count drives, projects, service accounts, json keys, groups and group members."""
+        list_drives = []
+        list_drives = self.drives("", "", cf.token, False)
+        print("Drive count  :", len(list_drives))
+        list_projects = []
+        list_projects = self.projects("", "", cf.token, False)
+        print("Project count:", len(list_projects))
+        list_groups = []
+        list_groups = self.groups("", "", cf.group_token, False)
+        print("Group count  :", len(list_groups))
+        try:
+            list_jsons = self.jsons(cf.sa_path, "", "", False)
+            print("JSON count   :", len(list_jsons))
+        except:
+            print("JSON count   : 0")
+        list_sas = []
+        list_sas, _ = self.sas("", False, "", cf.token, False)
+        print("SA count     :", len(list_sas))
+        list_members = []
+        list_members = self.members("", "", cf.group_token, False)
+        print("Member count :", len(list_members))
+
 
 class Add(ut.Help):
     """Add projects, drives, service accounts(SAs), SA keys/jsons and group members"""
