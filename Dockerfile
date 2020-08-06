@@ -1,4 +1,4 @@
-FROM python:3.8-alpine3.12
+FROM python:3.8.5-alpine3.12
 
 ENV MAX_PROJECTS=100
 ENV SAS_PER_PROJECT=100
@@ -8,6 +8,9 @@ ENV JSON_PREFIX=svcacc
 
 COPY ./requirements.txt /opt/requirements.txt
 WORKDIR /opt
+
+RUN apk --no-cache \
+    pip install /opt/requireme
 
 RUN apk --no-cache add \
     python3.8 &&\
