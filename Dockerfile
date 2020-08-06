@@ -12,6 +12,6 @@ WORKDIR /opt
 RUN apk --no-cache \
     pip install /opt/requireme
 
-RUN apk --no-cache add \
-    python3.8 &&\
-    pip install /opt/requireme
+# RUN apk --no-cache add \
+#     python3.8 &&\
+#     pip install /opt/requireme
