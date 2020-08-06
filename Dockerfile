@@ -9,9 +9,4 @@ ENV JSON_PREFIX=svcacc
 COPY ./requirements.txt /opt/requirements.txt
 WORKDIR /opt
 
-RUN apk --no-cache \
-    pip install /opt/requireme
-
-# RUN apk --no-cache add \
-#     python3.8 &&\
-#     pip install /opt/requireme
+RUN pip3 install /opt/requirements.txt
