@@ -1,4 +1,4 @@
-FROM python:3.8.5-alpine3.12
+FROM python:3.8-alpine3.12
 
 ENV MAX_PROJECTS=100
 ENV SAS_PER_PROJECT=100
