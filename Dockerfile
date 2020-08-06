@@ -6,6 +6,11 @@ ENV EMAIL_PREFIX=svcacc
 ENV PROJECT_PREFIX=UniqPrefix
 ENV JSON_PREFIX=svcacc
 
+ENV PIP_DISABLE_PIP_VERSION_CHECK=on
+RUN pip install poetry
 WORKDIR /opt
+COPY poetry.lock pyproject.toml /opt/
 
-RUN pip3 install .
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-interaction
+COPY . /opt
