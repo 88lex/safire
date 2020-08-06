@@ -8,4 +8,4 @@ ENV JSON_PREFIX=svcacc
 
 WORKDIR /opt
 
-RUN pip3 install safire
+RUN pip3 install .
