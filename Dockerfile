@@ -9,5 +9,5 @@ ENV JSON_PREFIX=svcacc
 COPY ./requirements.txt /opt/requirements.txt
 WORKDIR /opt
 
-RUN pip3 install /opt/requirements.txt && \
+RUN pip3 install -r /opt/requirements.txt && \
     pip3 install safire
