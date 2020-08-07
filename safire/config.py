@@ -5,7 +5,7 @@ from pathlib import Path
 ### These config variables can be customized for each user as needed        ###
 ###############################################################################
 num_new_projects = 1
-max_projects = 100
+# max_projects = 100
 next_project_num = 1
 next_sa_num = 1
 sas_per_project = 100
