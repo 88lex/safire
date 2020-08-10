@@ -76,6 +76,7 @@ of the page), then enable the following APIs:
     - Cloud Resource Manager API
     - Service Usage API
     - Service Management API
+    - Google Sheets API
 
 Once you have enabled the above APIs then go to this page 
 - https://console.cloud.google.com/apis/credentials

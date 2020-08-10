@@ -89,6 +89,7 @@ class Auth:
             "https://www.googleapis.com/auth/drive",
             "https://www.googleapis.com/auth/cloud-platform",
             "https://www.googleapis.com/auth/iam",
+            "https://www.googleapis.com/auth/spreadsheets",
         ]
         self.scopes_group = [
             "https://www.googleapis.com/auth/admin.directory.group",
