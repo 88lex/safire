@@ -431,12 +431,23 @@ class Add(ut.Help):
         print(f"  Drive ID for {td_name} is {driveId}")
         return td_name, driveId
 
-    def drives(self, input_file):
-        """Create team/shared drives. Usage: 'safire add teamdrive some_filename' containing a list of drive names"""
-        td_list = open(input_file, "r")
+    def drives(self, *td_list):
+        """Create team/shared drives. Usage: 'safire add drives some_filename' containing 
+        a list of drive names OR `safire add drives mytd1 mytd2 mytd3`"""
+        td_file = " ".join(sys.argv[3:]).strip('"')
+        if os.path.isfile(td_file):
+            with open(td_file, "r") as td_lst:
+                td_list = [i for i in td_lst]
         for td_name in td_list:
             print(f"Creating {td_name}")
             self.drive(td_name.rstrip())
+
+    # def drives(self, input_file):
+    #     """Create team/shared drives. Usage: 'safire add teamdrive some_filename' containing a list of drive names"""
+    #     td_list = open(input_file, "r")
+    #     for td_name in td_list:
+    #         print(f"Creating {td_name}")
+    #         self.drive(td_name.rstrip())
 
     def members(
         self,
