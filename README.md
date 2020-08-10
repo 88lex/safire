@@ -3,6 +3,8 @@
 
 You can install safire from either [pypi]( https://pypi.org/project/safire/ ) or [github]( https://github.com/88lex/safire )
 
+<a href="https://colab.research.google.com/github/88lex/safire/blob/master/safire.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+
 After installing but before using safire you must 
 - create a creds.json file
 - run both `safire auth projects` and `safire auth groups` to create token.pickle and grptoken.pickle
