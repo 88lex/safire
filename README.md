@@ -1,9 +1,9 @@
 ### __SAFIRE__
 #### A flexible tool to create and delete GSuite projects, service accounts and jsons which can be used with shared/team drives.
 
-You can install safire from [pypi]( https://pypi.org/project/safire/ ) , [github]( https://github.com/88lex/safire ) or Colab
+You can install safire from [pypi]( https://pypi.org/project/safire/ ) , docker, [github]( https://github.com/88lex/safire ), Colab
 
-<a href="https://colab.research.google.com/github/88lex/safire/blob/master/safire.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+<a href="https://colab.research.google.com/github/88lex/safire/blob/master/safire.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> 
 
 After installing but before using safire you must 
 - create a creds.json file
