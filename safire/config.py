@@ -5,7 +5,7 @@ from pathlib import Path
 ### These config variables can be customized for each user as needed        ###
 ###############################################################################
 num_new_projects = 1
-# max_projects = 100
+max_projects = 100
 next_project_num = 1
 next_sa_num = 1
 sas_per_project = 100
@@ -38,8 +38,8 @@ token = f"{cred_path}/token.pickle"
 # If group is in the same account as your projects/drives then copy from above
 group_credentials = f"{cred_path}/creds.json"
 group_token = f"{cred_path}/grptoken.pickle"
-sleep_time = 10
-retry = 10
+sleep_time = 6
+retry = 5
 nPT = "nextPageToken"
 
 # 'pad' vars set zero padding for names. e.g. jpad=6 yields 000001.json. Set to 1 if no prefix needed.

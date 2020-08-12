@@ -319,13 +319,13 @@ class Add(ut.Help):
         file_tag="",
         prt=False,
     ):
-        """Create N service accounts/SAs in projects which match 'filter'. Usage: 'safire add sas 5 xyz'
-         will add 5 SAs to all projects containing 'xys' if fewer than 100 exist. Will not overwrite SAs."""
+        """Create N service accounts/SAs in projects which match 'filter'. Usage: 'safire add sas xyz 5'
+         will add 5 SAs to all projects containing 'xyz' if fewer than 100 exist. Will not overwrite SAs."""
         iam = self._svc(*cf.IAM, cf.token)
         projId_list = self._list.projects(filter, file_tag, cf.token, prt)
         all_sas = []
         for project in projId_list:
-            batch = ut.BatchJob(iam)
+            # batch = ut.BatchJob(iam)
             sa_emails, _ = self._list.sas(project, True, file_tag, cf.token, False)
             start_sa_emails = sa_emails
             start_sa_count = len(sa_emails)
@@ -337,6 +337,7 @@ class Add(ut.Help):
             new_sas = []
             retries = retry
             while count and retries:
+                batch = ut.BatchJob(iam)
                 for _ in range(count):
                     while [s for s in all_sas if str(next_sa_num) in s.split("@")[0]]:
                         next_sa_num += 1
@@ -356,7 +357,7 @@ class Add(ut.Help):
                 sa_emails, _ = self._list.sas(project, True, file_tag, cf.token, False)
                 curr_sa_count = len(sa_emails)
                 count = count - curr_sa_count + start_sa_count
-                sleep(cf.sleep_time)
+                sleep(cf.sleep_time / 4)
             new_sa_emails = [i for i in sa_emails if i not in start_sa_emails]
             num_sas_created = len(new_sa_emails)
             print(
@@ -497,16 +498,31 @@ class Add(ut.Help):
                     f"{len(sa_emails)-len(add_sas)} SA emails from {project} are in {group}. {len(add_sas)} failed."
                 )
 
-    def user(self, td_id, user, role="organizer"):
-        """Add user (typically group name) to a shared/team drive. Usage: 'safire add someTDid mygroup@domain.com'"""
-        drive = self._svc(*cf.DRIVE, cf.token)
-        body = {"type": "user", "role": role, "emailAddress": user}
-        return (
-            drive.permissions()
-            .create(body=body, fileId=td_id, supportsAllDrives=True, fields="id")
-            .execute()
-            .get("id")
-        )
+    # def user(self, td_id, user, role="organizer"):
+    #     """Add user (typically group name) to a shared/team drive. Usage: 'safire add someTDid mygroup@domain.com'"""
+    #     drive = self._svc(*cf.DRIVE, cf.token)
+    #     body = {"type": "user", "role": role, "emailAddress": user}
+    #     return (
+    #         drive.permissions()
+    #         .create(body=body, fileId=td_id, supportsAllDrives=True, fields="id")
+    #         .execute()
+    #         .get("id")
+    #     )
+
+    def user(self, user, *td_id, role="organizer"):
+        """Add user (typically group name) to shared/team drive(s). Usage: 'safire add mygroup@domain.com td_filter'"""
+        for td_filt in td_id:
+            drives = self._list.drives(td_filt, "", token, False)
+            for td in drives:
+                if td_filt in td["name"]:
+                    print(f"Adding {user} to {td['name']} {td['id']}")
+                    drive = self._svc(*cf.DRIVE, cf.token)
+                    body = {"type": "user", "role": role, "emailAddress": user}
+                    drive.permissions().create(
+                        body=body, fileId=td["id"], supportsAllDrives=True, fields="id"
+                    ).execute()
+                else:
+                    pass
 
 
 class Remove(ut.Help):
@@ -611,17 +627,51 @@ class Remove(ut.Help):
             print(f"Deleting {teamDriveId}")
             self.drive(teamDriveId.rstrip())
 
-    def user(self, td_id, user, role="organizer", token=cf.token):
-        """Remove user (typically group name) from a shared/team drive. Usage: 'safire remove someTDid mygroup@domain.com'"""
-        drvsvc = self._svc(*cf.DRIVE, token)
-        return (
-            drvsvc.permissions()
-            .delete(
-                permissionId=user, fileId=td_id, supportsAllDrives=True, fields="id"
-            )
-            .execute()
-            .get("id")
-        )
+    # def user(self, td_id, user, role="organizer", token=cf.token):
+    #     """Remove user (typically group name) from a shared/team drive. Usage: 'safire remove someTDid mygroup@domain.com'"""
+    #     drvsvc = self._svc(*cf.DRIVE, token)
+    #     return (
+    #         drvsvc.permissions()
+    #         .delete(
+    #             permissionId=user, fileId=td_id, supportsAllDrives=True, fields="id"
+    #         )
+    #         .execute()
+    #         .get("id")
+    #     )
+
+    def user(self, user, *td_id, role="organizer", token=cf.token):
+        """Remove user (typically group name) from shared/team drive(s). Usage: 'safire remove mygroup@domain.com td_filter'"""
+        drives = self._list.drives("", "", token, False)
+        for td_filt in td_id:
+            for td in drives:
+                if td_filt in td["name"]:
+                    drvsvc = self._svc(*cf.DRIVE, token)
+                    user_info = []
+                    resp = {"nextPageToken": None}
+                    while "nextPageToken" in resp:
+                        resp = (
+                            drvsvc.permissions()
+                            .list(
+                                fileId=td["id"],
+                                pageSize=100,
+                                fields="nextPageToken,permissions(id,emailAddress,role)",
+                                supportsAllDrives=True,
+                                pageToken=resp["nextPageToken"],
+                            )
+                            .execute()
+                        )
+                        user_info += resp["permissions"]
+                    for i in user_info:
+                        if user in i["emailAddress"]:
+                            print(
+                                f"Removing {user} with id {i['id']} from {td['name']} {td['id']}"
+                            )
+                            drvsvc.permissions().delete(
+                                permissionId=i["id"],
+                                fileId=td["id"],
+                                supportsAllDrives=True,
+                                fields="id",
+                            ).execute()
 
 
 class Rename:
