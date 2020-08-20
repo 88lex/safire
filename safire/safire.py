@@ -21,10 +21,11 @@ saf_dir = os.path.join(base_path, "safire")
 os.makedirs(saf_dir, exist_ok=True)
 
 cfg_file = os.path.join(saf_dir, "config.py")
+loc_cfg_file = os.path.join(os.getcwd(), "config.py")
 if os.path.exists(cfg_file):
-    copyfile(cfg_file, "config.py")
+    copyfile(cfg_file, loc_cfg_file)
 else:
-    copyfile("default_config.py", "config.py")
+    copyfile("default_config.py", loc_cfg_file)
     copyfile("default_config.py", cfg_file)
 
 import config as cf
