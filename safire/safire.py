@@ -15,23 +15,20 @@ from pathlib import Path
 from shutil import copyfile
 from time import sleep
 
-dir = f"{Path.home()}/safire"
-if os.path.exists(f"{dir}/config.py"):
-    copyfile(f"{dir}/config.py", "config.py")
+# base_path = "/opt"
+base_path = str(Path.home())
+saf_dir = os.path.join(base_path, "safire")
+os.makedirs(saf_dir, exist_ok=True)
+
+cfg_file = os.path.join(saf_dir, "config.py")
+if os.path.exists(cfg_file):
+    copyfile(cfg_file, "config.py")
 else:
-    copyfile("config.py", f"{dir}/config.py")
+    copyfile("default_config.py", "config.py")
+    copyfile("default_config.py", cfg_file)
 
 import config as cf
 import utils as ut
-
-
-class Init:
-    # Unused at the moments
-    dir = f"{Path.home()}/safire"
-    if not os.path.exists(f"{dir}/config.py"):
-        copyfile("config.py", f"{dir}/config.py")
-    sys.path.insert(1, dir)
-    import config as cf
 
 
 class Commands:
@@ -443,13 +440,6 @@ class Add(ut.Help):
             print(f"Creating {td_name}")
             self.drive(td_name.rstrip())
 
-    # def drives(self, input_file):
-    #     """Create team/shared drives. Usage: 'safire add teamdrive some_filename' containing a list of drive names"""
-    #     td_list = open(input_file, "r")
-    #     for td_name in td_list:
-    #         print(f"Creating {td_name}")
-    #         self.drive(td_name.rstrip())
-
     def members(
         self,
         project_filter,
@@ -497,17 +487,6 @@ class Add(ut.Help):
                 print(
                     f"{len(sa_emails)-len(add_sas)} SA emails from {project} are in {group}. {len(add_sas)} failed."
                 )
-
-    # def user(self, td_id, user, role="organizer"):
-    #     """Add user (typically group name) to a shared/team drive. Usage: 'safire add someTDid mygroup@domain.com'"""
-    #     drive = self._svc(*cf.DRIVE, cf.token)
-    #     body = {"type": "user", "role": role, "emailAddress": user}
-    #     return (
-    #         drive.permissions()
-    #         .create(body=body, fileId=td_id, supportsAllDrives=True, fields="id")
-    #         .execute()
-    #         .get("id")
-    #     )
 
     def user(self, user, *td_id, role="organizer"):
         """Add user (typically group name) to shared/team drive(s). Usage: 'safire add mygroup@domain.com td_filter'"""
@@ -626,18 +605,6 @@ class Remove(ut.Help):
         for teamDriveId in td_list:
             print(f"Deleting {teamDriveId}")
             self.drive(teamDriveId.rstrip())
-
-    # def user(self, td_id, user, role="organizer", token=cf.token):
-    #     """Remove user (typically group name) from a shared/team drive. Usage: 'safire remove someTDid mygroup@domain.com'"""
-    #     drvsvc = self._svc(*cf.DRIVE, token)
-    #     return (
-    #         drvsvc.permissions()
-    #         .delete(
-    #             permissionId=user, fileId=td_id, supportsAllDrives=True, fields="id"
-    #         )
-    #         .execute()
-    #         .get("id")
-    #     )
 
     def user(self, user, *td_id, role="organizer", token=cf.token):
         """Remove user (typically group name) from shared/team drive(s). Usage: 'safire remove mygroup@domain.com td_filter'"""
