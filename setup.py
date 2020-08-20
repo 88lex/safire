@@ -21,19 +21,18 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name='safire',
-    version='0.2.0',
+    version='0.2.1',
     description='A flexible tool to create and delete Google / GSuite service accounts to be used with shared drives.',
     python_requires='==3.*,>=3.6.1',
     author='88lex',
     keywords='gsuite sas service accounts',
     entry_points={"console_scripts": ["safire = safire.safire:main"]},
-    packages=['safire', 'safire.lib-tmp'],
+    packages=['safire'],
     package_dir={"": "."},
     package_data={
         "safire": [
             "creds/*.json", "creds/*.pickle", "creds/archive/*.json",
-            "creds/archive/*.pickle", "data/*.csv", "data/*.xlsx",
-            "svcaccts/*.json"
+            "creds/archive/*.pickle", "data/*.csv", "data/*.xlsx"
         ]
     },
     install_requires=[
