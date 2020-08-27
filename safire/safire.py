@@ -489,7 +489,7 @@ class Add(ut.Help):
                     f"{len(sa_emails)-len(add_sas)} SA emails from {project} are in {group}. {len(add_sas)} failed."
                 )
 
-    def user(self, user, *td_id, role="organizer"):
+    def user(self, user, *td_id, role="organizer", token=cf.token):
         """Add user (typically group name) to shared/team drive(s). Usage: 'safire add mygroup@domain.com td_filter'"""
         for td_filt in td_id:
             drives = self._list.drives(td_filt, "", token, False)
