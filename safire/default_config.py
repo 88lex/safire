@@ -23,8 +23,7 @@ group_address = ""
 ### Config variables below are normally not changed by the user             ###
 ###############################################################################
 
-# 'dir' = default home dir. Can change to any e.g. = "/somedir/safire"
-# dir = '/opt/safire'
+# 'dir' = default home dir. Can change to any e.g. = "/opt/safire"
 dir = f"{str(Path.home())}/safire"
 
 # These dirs and files are located below the path set as 'dir ='

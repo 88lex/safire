@@ -19,17 +19,25 @@ from time import sleep
 base_path = str(Path.home())
 saf_dir = os.path.join(base_path, "safire")
 os.makedirs(saf_dir, exist_ok=True)
-
 cfg_file = os.path.join(saf_dir, "config.py")
-loc_cfg_file = os.path.join(os.getcwd(), "config.py")
-if os.path.exists(cfg_file):
-    copyfile(cfg_file, loc_cfg_file)
-else:
-    copyfile("default_config.py", loc_cfg_file)
-    copyfile("default_config.py", cfg_file)
+# loc_cfg_file = os.path.join(os.getcwd(), "config.py")
+def_cfg_file = os.path.join(os.getcwd(), "default_config.py")
 
-import config as cf
-import utils as ut
+if os.path.exists(cfg_file):
+    copyfile(cfg_file, "config.py")
+elif os.path.exists("config.py"):
+    copyfile("config.py", cfg_file)
+elif os.path.exists("default_config.py"):
+    copyfile("default_config.py", "config.py")
+    copyfile("default_config.py", cfg_file)
+else:
+    print("No config.py file found! Create a file config.py using the template at \n")
+    print("https://github.com/88lex/safire/blob/master/safire/default_config.py\n")
+    print("and paste it in your home/safire directory\n")
+    exit()
+
+import config as cf  # type: ignore
+import utils as ut  # type: ignore
 
 
 class Commands:
@@ -305,6 +313,7 @@ class Add(ut.Help):
                     )
                 )
             batch.execute()
+            sleep(cf.sleep_time)
 
     def sas(
         self,
@@ -647,7 +656,7 @@ class Rename:
     Usage: 'safire rename jsons email'  [choice email, email_seq, uniq, seq]
     Renaming is repeatable. Can always delete and redownload keys if needed."""
 
-    def jsons(self, rename_type, dir=f"{cf.sa_path}/"):
+    def jsons(self, rename_type, dir=f"{cf.sa_path}/", next_json_num=cf.next_json_num):
         """Usage: 'safire rename jsons email'  [choice email, email_seq, uniq, seq]"""
         import json, os
 
@@ -656,7 +665,7 @@ class Rename:
         new_name = []
         if rename_type == "seq":
             [
-                os.rename(dir + file, dir + f"{i+1}.json")
+                os.rename(dir + file, dir + f"{i+next_json_num}.json")
                 for i, file in enumerate(sorted(filelist))
             ]
         else:
