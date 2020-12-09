@@ -24,13 +24,8 @@ cfg_file = os.path.join(saf_dir, "config.py")
 def_cfg_file = os.path.join(saf_dir, "default_config.py")
 if os.path.exists(cfg_file):
     pass
-elif os.path.exists(def_cfg_file):
-    copyfile(def_cfg_file, cfg_file)
 else:
-    print("No config.py file found! Create a file config.py using the template at \n")
-    print("https://github.com/88lex/safire/blob/master/safire/default_config.py\n")
-    print("and paste it in your home/safire directory\n")
-    exit()
+    copyfile(def_cfg_file, cfg_file)
 
 import config as cf  # type: ignore
 from . import utils as ut  # type: ignore
