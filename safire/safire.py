@@ -14,14 +14,11 @@ from time import sleep
 # base_path = "/opt"
 base_path = str(Path.home())
 saf_dir = os.path.join(base_path, "safire")
-
 sys.path.append(saf_dir)
-# sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
 os.makedirs(saf_dir, exist_ok=True)
 cfg_file = os.path.join(saf_dir, "config.py")
 # loc_cfg_file = os.path.join(os.getcwd(), "config.py")
-def_cfg_file = os.path.join(saf_dir, "default_config.py")
+def_cfg_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "default_config.py")
 if os.path.exists(cfg_file):
     pass
 else:
