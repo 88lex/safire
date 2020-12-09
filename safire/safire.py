@@ -369,7 +369,6 @@ class Add(ut.Help):
         self,
         filter="",
         sa_path=cf.sa_path,
-        next_json_num=cf.next_json_num,
         json_prefix=cf.json_prefix,
         jpad=cf.jpad,
         retry=cf.retry,
@@ -409,10 +408,14 @@ class Add(ut.Help):
                         i["name"][i["name"].rfind("/") :],
                         b64decode(i["privateKeyData"]).decode("utf-8"),
                     )[1]
-                    json_name = self._pre_pad(json_prefix, jpad, next_json_num)
-                    with open("%s/%s.json" % (sa_path, json_name), "w+") as f:
+                    private_key_id = ""
+                    try: private_key_id = loads(k)["private_key_id"]
+                    except: pass
+                    if not private_key_id:
+                        continue
+                    json_name = json_prefix+private_key_id
+                    with open("%s/%s@%s.json" % (sa_path, project, json_name), "w+") as f:
                         f.write(k)
-                    next_json_num += 1
             sleep(cf.sleep_time)
 
     keys = jsons
