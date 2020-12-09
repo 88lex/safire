@@ -2,10 +2,6 @@
 
 import os
 import sys
-
-# sys.path.insert(0, os.path.abspath("../"))
-sys.path.append("..")
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import fire
 import uuid
 from base64 import b64decode
@@ -18,18 +14,18 @@ from time import sleep
 # base_path = "/opt"
 base_path = str(Path.home())
 saf_dir = os.path.join(base_path, "safire")
+
+sys.path.append(saf_dir)
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
 os.makedirs(saf_dir, exist_ok=True)
 cfg_file = os.path.join(saf_dir, "config.py")
 # loc_cfg_file = os.path.join(os.getcwd(), "config.py")
-def_cfg_file = os.path.join(os.getcwd(), "default_config.py")
-
+def_cfg_file = os.path.join(saf_dir, "default_config.py")
 if os.path.exists(cfg_file):
-    copyfile(cfg_file, "config.py")
-elif os.path.exists("config.py"):
-    copyfile("config.py", cfg_file)
-elif os.path.exists("default_config.py"):
-    copyfile("default_config.py", "config.py")
-    copyfile("default_config.py", cfg_file)
+    pass
+elif os.path.exists(def_cfg_file):
+    copyfile(def_cfg_file, cfg_file)
 else:
     print("No config.py file found! Create a file config.py using the template at \n")
     print("https://github.com/88lex/safire/blob/master/safire/default_config.py\n")
@@ -37,7 +33,7 @@ else:
     exit()
 
 import config as cf  # type: ignore
-import utils as ut  # type: ignore
+from . import utils as ut  # type: ignore
 
 
 class Commands:
