@@ -205,8 +205,8 @@ COMMANDS
        Create projects in authorized account. Usage: 'safire add projects 1'. Uses defaults in config if none specified.
 
      sas
-       Create N service accounts/SAs in projects which match 'filter'. Usage: 'safire add sas 5 xyz' will 
-       add 5 SAs to all projects containing 'xys' if fewer than 100 exist. Will not overwrite SAs.
+       Create N service accounts/SAs in projects which match 'filter'. Usage: 'safire add sas xyz 5' will 
+       add 5 SAs to all projects containing 'xyz' if fewer than 100 exist. Will not overwrite SAs.
 
      user
        Add user (typically group name) to a shared/team drive. Usage: 'safire add someTDid mygroup@domain.com'
