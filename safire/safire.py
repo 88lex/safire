@@ -2,10 +2,6 @@
 
 import os
 import sys
-
-# sys.path.insert(0, os.path.abspath("../"))
-sys.path.append("..")
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import fire
 import uuid
 from base64 import b64decode
@@ -18,26 +14,18 @@ from time import sleep
 # base_path = "/opt"
 base_path = str(Path.home())
 saf_dir = os.path.join(base_path, "safire")
+sys.path.append(saf_dir)
 os.makedirs(saf_dir, exist_ok=True)
 cfg_file = os.path.join(saf_dir, "config.py")
 # loc_cfg_file = os.path.join(os.getcwd(), "config.py")
-def_cfg_file = os.path.join(os.getcwd(), "default_config.py")
-
+def_cfg_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "default_config.py")
 if os.path.exists(cfg_file):
-    copyfile(cfg_file, "config.py")
-elif os.path.exists("config.py"):
-    copyfile("config.py", cfg_file)
-elif os.path.exists("default_config.py"):
-    copyfile("default_config.py", "config.py")
-    copyfile("default_config.py", cfg_file)
+    pass
 else:
-    print("No config.py file found! Create a file config.py using the template at \n")
-    print("https://github.com/88lex/safire/blob/master/safire/default_config.py\n")
-    print("and paste it in your home/safire directory\n")
-    exit()
+    copyfile(def_cfg_file, cfg_file)
 
 import config as cf  # type: ignore
-import utils as ut  # type: ignore
+from . import utils as ut  # type: ignore
 
 
 class Commands:
@@ -378,7 +366,6 @@ class Add(ut.Help):
         self,
         filter="",
         sa_path=cf.sa_path,
-        next_json_num=cf.next_json_num,
         json_prefix=cf.json_prefix,
         jpad=cf.jpad,
         retry=cf.retry,
@@ -412,6 +399,7 @@ class Add(ut.Help):
                     )
                 resp = [i["response"] for i in batch.execute()]
                 retries -= 1
+            next_json_num = 1
             for i in resp:
                 if i is not None:
                     k = (
@@ -419,7 +407,7 @@ class Add(ut.Help):
                         b64decode(i["privateKeyData"]).decode("utf-8"),
                     )[1]
                     json_name = self._pre_pad(json_prefix, jpad, next_json_num)
-                    with open("%s/%s.json" % (sa_path, json_name), "w+") as f:
+                    with open("%s/%s@%s.json" % (sa_path, project, json_name), "w+") as f:
                         f.write(k)
                     next_json_num += 1
             sleep(cf.sleep_time)
