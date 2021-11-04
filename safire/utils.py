@@ -38,14 +38,17 @@ class Help:
         df = pd.DataFrame(dset)
         fname = f"{ltype}_list_{filter}_{file_tag}"
         pd.set_option("display.max_rows", None)
-        df.to_csv("{}/{}.csv".format(cf.data_path, fname))
-        df.to_excel("{}/{}.xlsx".format(cf.data_path, fname))
+        if len(df) > 0:
+            df.to_csv("{}/{}.csv".format(cf.data_path, fname))
+            df.to_excel("{}/{}.xlsx".format(cf.data_path, fname))
         if prt:
-            print(df[fields])
+            if len(df) > 0:
+                print(df[fields])
             print(f"  {len(df)} {ltype} found")
-            print(
-                f"\nData for {ltype} exported to {fname}.csv and .xlsx in folder /{cf.data_path}\n"
-            )
+            if len(df) > 0:
+                print(
+                    f"\nData for {ltype} exported to {fname}.csv and .xlsx in folder /{cf.data_path}\n"
+                )
 
     def _print1(self, plist, ltype):
         print("", *plist, sep="\n")
