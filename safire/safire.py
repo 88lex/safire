@@ -269,9 +269,11 @@ class Add(ut.Help):
                 for i in range(num_new_projects)
             ]
             for proj in new_projs:
+                print(f"Attempting to create {proj}")
                 batch.add(
                     cloud.projects().create(body={"project_id": proj, "name": proj})
                 )
+            print(f"executing batch")
             batch.execute()
             retries -= 1
             curr_projects = self._list.projects("", "", token, prt)
